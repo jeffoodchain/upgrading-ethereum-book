@@ -283,7 +283,7 @@ Lamport 以下面這種方式刻劃了系統的故障性質。
   - 合併後的信標鏈區塊還包含執行酬載（也就是使用者交易）。
   - 一旦 [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) 在以太坊上實作，區塊除了那份有序的使用者交易清單之外，還會包含對不透明資料 blob 的承諾。
 
-除了特殊的創世區塊之外，每個區塊都建構在某個父區塊之上、並指向該父區塊。於是，我們最終得到一條由區塊串成的鏈：區塊鏈。無論區塊的內容為何，協定的目標都是讓網路上所有節點對同一份區塊鏈歷史達成一致。
+除了特殊的創世區塊之外，每個區塊都建構在某個 parent block 之上、並指向該 parent block。於是，我們最終得到一條由區塊串成的鏈：區塊鏈。無論區塊的內容為何，協定的目標都是讓網路上所有節點對同一份區塊鏈歷史達成一致。
 
 <a id="img_consensus_block_chain"></a>
 <figure class="diagram" style="width: 90%">
@@ -292,7 +292,7 @@ Lamport 以下面這種方式刻劃了系統的故障性質。
 
 <figcaption>
 
-一條區塊鏈。時間由左向右推移，除了創世區塊之外，每個區塊都指向它所建構於其上的父區塊。
+一條區塊鏈。時間由左向右推移，除了創世區塊之外，每個區塊都指向它所建構於其上的 parent block。
 
 </figcaption>
 </figure>
@@ -314,12 +314,12 @@ Lamport 以下面這種方式刻劃了系統的故障性質。
 
 <figcaption>
 
-一般而言，我們最終得到的可能是一棵區塊樹，而不是一條區塊鏈。同樣地，時間由左向右推移，每個區塊都指向它所建構於其上的父區塊。
+一般而言，我們最終得到的可能是一棵區塊樹，而不是一條區塊鏈。同樣地，時間由左向右推移，每個區塊都指向它所建構於其上的 parent block。
 
 </figcaption>
 </figure>
 
-在真實的網路中，我們最終得到的東西可能更像一棵區塊樹，而不是一條區塊鏈。在這個例子裡，極少有區塊建構在它「顯而易見」的父區塊之上。
+在真實的網路中，我們最終得到的東西可能更像一棵區塊樹，而不是一條區塊鏈。在這個例子裡，極少有區塊建構在它「顯而易見」的 parent block 之上。
 
 為什麼區塊 $C$ 的提議者選擇建構在 $A$ 之上，而不是 $B$？
 
@@ -375,7 +375,7 @@ Lamport 以下面這種方式刻劃了系統的故障性質。
 
 當節點收到新的區塊（在權益證明下，還包括對區塊的新投票）時，它會根據這些新資訊重新評估分叉選擇規則。最常見的情況是，新區塊會是節點目前視為鏈頭之區塊的子區塊，於是新區塊就成為鏈頭區塊。
 
-然而，有時新區塊可能是區塊樹中其他某個區塊的後代。（請注意，如果節點還沒有新區塊的父區塊，它就必須向對等節點索取，對於任何它知道自己缺少的區塊也都如此辦理。）
+然而，有時新區塊可能是區塊樹中其他某個區塊的後代。（請注意，如果節點還沒有新區塊的 parent block，它就必須向對等節點索取，對於任何它知道自己缺少的區塊也都如此辦理。）
 
 無論如何，在更新後的區塊樹上執行分叉選擇規則，可能會指出一個與先前鏈頭處於不同分支的鏈頭區塊。發生這種情況時，節點就必須進行一次重組（reorg，reorganisation 的縮寫），也稱為回退（reversion）。它會踢掉（回退）先前已納入自己鏈中的區塊，並改採新鏈頭所在分支上的區塊。
 
@@ -519,23 +519,23 @@ Vitalik 的部落格文章[《論結算最終性》](https://blog.ethereum.org/2
 
 對於我們正在打造的系統，我們的理想是：它們在_政治上_是去中心化的（為了無須許可與抗審查）、在_架構上_是去中心化的（為了韌性，沒有單一故障點），但在_邏輯上_是中心化的（如此一來它們才會給出一致的結果）。這些準則強烈影響著我們設計共識協定的方式。Vitalik 在他的文章[《去中心化的意義》](https://medium.com/@VitalikButerin/the-meaning-of-decentralization-a0c92b76a274)中探討了這些議題。
 
-### Overview <!-- /part2/consensus/overview/ -->
+### 概觀 <!-- /part2/consensus/overview/ -->
 
 <div class="summary">
 
-  - Nodes and validators are the actors of the consensus system.
-  - Slots and epochs regulate consensus time.
-  - Blocks and attestations are the currency of consensus.
-  - Ethereum's consensus protocol combines two separate consensus protocols.
-  - "LMD GHOST" essentially provides liveness.
-  - "Casper FFG" provides finality.
-  - Together they are sometimes known as "Gasper".
+  - 節點與驗證者是共識系統的行為者。
+  - 時段與紀元規範了共識的時間。
+  - 區塊與證明是共識的通貨。
+  - 以太坊的共識協定結合了兩種獨立的共識協定。
+  - 「LMD GHOST」本質上提供活躍性。
+  - 「Casper FFG」提供最終性。
+  - 兩者合起來，有時被稱為「Gasper」。
 
 </div>
 
-#### Introduction
+#### 引言
 
-The last section gave a broad view of blockchain consensus; in this section we will tighten the focus to Ethereum's proof of stake consensus. I've tried to follow a path that gives enough information to make sense of things, without wandering off into the detailed technical weeds on either side. All those weeds are well explored in the [annotated specification](/part3/) and other chapters, and I've included some links for those who want to branch off and go exploring.
+上一節對區塊鏈共識給出了一個寬廣的概觀；在本節中，我們會把焦點收緊到以太坊的權益證明共識上。我試著遵循一條能給出足夠資訊、好讓事情說得通的路徑，而不偏離到兩旁細瑣的技術雜草之中。所有那些雜草，在[註解版規格](/part3/)以及其他章節中都已被詳加探索，我也為那些想要岔出去一探究竟的讀者附上了一些連結。
 
 我們必須先涵蓋的第一件事，是我們通篇都會用到的、以太坊所特有的術語。
 
@@ -559,11 +559,11 @@ The last section gave a broad view of blockchain consensus; in this section we w
 
 ##### 區塊與證明
 
-每個時段，恰好有一個驗證者被[選出](/part3/helper/accessors/#get_beacon_proposer_index)來提議一個_區塊_。該區塊[包含](/part3/containers/blocks/#beaconblockbody)對信標狀態的更新，包括提議者所知道的證明，以及包含以太坊使用者交易的[執行酬載](/part3/containers/execution/#executionpayload)。提議者透過一個流言協定把它的區塊分享給整個網路。
+每個時段，恰好有一個驗證者被[選出](/part3/helper/accessors/#get_beacon_proposer_index)來提議一個_區塊_（block）。該區塊[包含](/part3/containers/blocks/#beaconblockbody)對信標狀態的更新，包括_提議者_（proposer）所知道的證明，以及包含以太坊使用者交易的[執行酬載](/part3/containers/execution/#executionpayload)（execution payload）。提議者透過一個流言（gossip）協定把它的區塊分享給整個網路。
 
-一個時段可以是空的：區塊提議者可能離線、可能提議一個無效的區塊，或它的區塊隨後被重組出鏈外。在一條運作良好的信標鏈上，這些事情不應經常發生，但協定的用意是要在空時段出現時仍具韌性。
+一個時段可以是空的：區塊提議者可能離線、可能提議一個無效的區塊，或它的區塊隨後被重組（reorg）出鏈外。在一條運作良好的信標鏈上，這些事情不應經常發生，但協定的用意是要在空時段出現時仍具韌性。
 
-每個紀元，每個驗證者都恰好有一次機會以一份_證明_（attestation）的形式分享它對世界的看法。一份證明[包含](/part3/containers/dependencies/#attestationdata)對鏈_鏈頭_的投票（將被 LMD GHOST 協定使用），以及對_檢查點_的投票（將被 Casper FFG 協定使用）。證明也會被流言傳播給整個網路。如同區塊一樣，證明也可能因為各式各樣的原因而缺失，協定能在不同程度上容忍這一點——粗略地說，隨著證明者的參與率下降，共識的品質也會下降。[^fn-attestation-rate]
+每個紀元，每個驗證者都恰好有一次機會以一份_證明_（attestation）的形式分享它對世界的看法。一份證明[包含](/part3/containers/dependencies/#attestationdata)對鏈_鏈頭_（head）的投票（將被 LMD GHOST 協定使用），以及對_檢查點_（checkpoint）的投票（將被 Casper FFG 協定使用）。證明也會被流言傳播給整個網路。如同區塊一樣，證明也可能因為各式各樣的原因而缺失，協定能在不同程度上容忍這一點——粗略地說，隨著證明者的參與率下降，共識的品質也會下降。[^fn-attestation-rate]
 
 [^fn-attestation-rate]: [Beaconcha.in](https://beaconcha.in) 網站以每個紀元為單位顯示證明參與率（也稱為投票參與率，Voting Participation）。它是衡量網路健康狀況的好指標。這個比率經常超過 99%，對一個大規模分散式共識協定而言，這是出色的效能水準。
 
@@ -589,7 +589,7 @@ The last section gave a broad view of blockchain consensus; in this section we w
 
 [^fn-ffg-name]: 「友善最終性裝置 Casper」（Casper the Friendly Finality Gadget）。同樣地，等我們講到專門的 [Casper FFG 章節](/part2/consensus/casper_ffg/#naming)時，我會拆解這個略顯古怪的命名。
 
-把這兩者組合在 Gasper 中，是一種在活躍性與安全性兩方面都想兩全其美的嘗試。本質上，LMD GHOST 提供逐時段的活躍性（讓鏈持續運作），而 Casper FFG 提供安全性（保護鏈不受長回退之害）。LMD GHOST 讓我們能持續一個接一個地產出區塊，但它會分叉，因此在形式上並不安全。Casper FFG 修改了 LMD GHOST 的分叉選擇規則，週期性地為鏈賜予最終性。儘管如此，如[先前所討論](/part2/consensus/preliminaries/#ethereum-prioritises-liveness)，以太坊優先考量活躍性。因此，在 Casper FFG 無法賦予最終性的情況下，鏈仍會透過 LMD GHOST 機制繼續成長。
+把這兩者組合在 Gasper 中，是一種在活躍性與安全性兩方面都想兩全其美的嘗試。本質上，LMD GHOST 提供逐時段的活躍性（讓鏈持續運作），而 Casper FFG 提供安全性（保護鏈不受長回退之害）。LMD GHOST 讓我們能持續一個接一個地產出區塊，但它會分叉，因此在形式上並不安全。Casper FFG 修改了 LMD GHOST 的分叉選擇（fork choice）規則，週期性地為鏈賜予最終性。儘管如此，如[先前所討論](/part2/consensus/preliminaries/#ethereum-prioritises-liveness)，以太坊優先考量活躍性。因此，在 Casper FFG 無法賦予最終性的情況下，鏈仍會透過 LMD GHOST 機制繼續成長。
 
 這個拴在一起的共識機制並不總是優美。我們有時看得見接縫，而兩者之間的互動導致了一些微妙的問題，我們會在[後文](/part2/consensus/issues/)討論。然而，以以太坊的精神而言，它是一個可行的工程解決方案，在實務上一直為我們發揮良好的作用。
 
@@ -613,7 +613,7 @@ Gasper 的詳細歷史與它各個組成部分——LMD GHOST 與 Casper FFG—�
 
 ##### 一個最終性裝置
 
-當我們說 Casper FFG 疊加在一個既有的區塊提議機制之上時，我們的意思是它取一棵既有的區塊樹，並以一種特定的方式修剪它。Casper FFG 藉由讓底層區塊樹的某些分支變得無法觸及，來修改它的分叉選擇。
+當我們說 Casper FFG 疊加在一個既有的區塊提議機制之上時，我們的意思是它取一棵既有的區塊樹（block tree），並以一種特定的方式修剪它。Casper FFG 藉由讓底層區塊樹的某些分支變得無法觸及，來修改它的分叉選擇。
 
 考慮這棵由某個底層共識機制——無論是工作量證明，還是權益證明中的 LMD GHOST——所產生的區塊樹。
 
@@ -629,7 +629,7 @@ Gasper 的詳細歷史與它各個組成部分——LMD GHOST 與 Casper FFG—�
 </figcaption>
 </figure>
 
-在這個情況中，我們有三個候選的鏈頭區塊：$I$、$E$、$M$。在工作量證明的最長鏈規則之下，鏈頭區塊的選擇顯而易見：我們必須選 M，因為它的區塊高度最大，或者（幾乎等價地）所完成的工作量最多。在 LMD GHOST 之下，我們無法單憑這項資訊選出鏈頭區塊，我們需要看到其他驗證者的投票才能做出選擇。
+在這個情況中，我們有三個候選的鏈頭區塊（head block）：$I$、$E$、$M$。在工作量證明的最長鏈規則之下，鏈頭區塊的選擇顯而易見：我們必須選 M，因為它的區塊高度最大，或者（幾乎等價地）所完成的工作量最多。在 LMD GHOST 之下，我們無法單憑這項資訊選出鏈頭區塊，我們需要看到其他驗證者的投票才能做出選擇。
 
 難題在於，從區塊 $J$ 到 $M$ 的這條鏈可能來自一個攻擊者。攻擊者可能祕密地挖出了那條鏈，然後在一場所謂的 51% 攻擊中於事後揭示出來。工作量證明的節點別無選擇，只能重組，讓 $M$ 成為鏈頭，從而偏袒攻擊者的鏈，並可能變得易受雙重花費之害。
 
@@ -673,7 +673,7 @@ Joachim Neu 的演講[《PoS 以太坊共識問題的為何與如何》](https:/
 
 <div class="summary">
 
-  - LMD GHOST 是節點用來判定最佳鏈的一種分叉選擇規則。
+  - LMD GHOST 是節點用來判定最佳鏈的一種分叉選擇（fork choice）規則。
   - 它依據所有活躍驗證者的投票，為各分支賦予權重。
   - LMD GHOST 並不提供最終性，但確實支援一條確認規則（confirmation rule）。
   - 罰沒被用來解決「無利害關係」問題。
@@ -714,7 +714,7 @@ GHOST 這個名稱代表「貪婪最重觀測子樹」（Greedy Heaviest-Observe
 
 #### 它如何運作
 
-LMD GHOST 最重要的是一個[分叉選擇規則](/part2/consensus/preliminaries/#fork-choice-rules)。給定一棵區塊樹與一組投票，LMD GHOST 會告訴我應該把哪個區塊視為最佳鏈頭，從而給我一份從那個鏈頭一路回溯到創世的線性歷史看法。這個判定是基於我對鏈的局部視角，而局部視角又是基於我的節點所收到的訊息（區塊與證明）——記住，並不存在「上帝視角」，我的局部視角就是我所能憑藉的全部，而它很可能與其他節點的局部視角不同。其構想是：誠實的驗證者會把它們的區塊建構在它們所見的最佳鏈頭之上，並進而依它們所見的最佳鏈頭區塊投下它們的票。
+LMD GHOST 最重要的是一個[分叉選擇規則](/part2/consensus/preliminaries/#fork-choice-rules)。給定一棵區塊樹（block tree）與一組投票，LMD GHOST 會告訴我應該把哪個區塊視為最佳鏈頭（head），從而給我一份從那個鏈頭一路回溯到創世（genesis）的線性歷史看法。這個判定是基於我對鏈的局部視角，而局部視角又是基於我的節點所收到的訊息（區塊與證明）——記住，並不存在「上帝視角」，我的局部視角就是我所能憑藉的全部，而它很可能與其他節點的局部視角不同。其構想是：誠實的驗證者會把它們的區塊建構在它們所見的最佳鏈頭之上，並進而依它們所見的最佳鏈頭區塊（head block）投下它們的票。
 
 一個好的分叉選擇規則會交付的若干特性如下。[^fn-good-fork-choice-rule]
 
@@ -760,7 +760,7 @@ class AttestationData(Container):
   - 它太新了嗎？
     - 它必須來自不晚於前一個時段。見[證明的近期性](/part2/consensus/issues/#attestation-recency)。
   - 我們知道它所投票支持的那個區塊（`beacon_block_root`）嗎？
-    - 我們必須已經收到那個區塊。如果沒有，我們可能會試著向某個對等節點取得它。
+    - 我們必須已經收到那個區塊。如果沒有，我們可能會試著向某個對等節點（peer）取得它。
   - 它的簽章正確嗎？
     - 驗證者為證明簽章，並為它們負責。
   - 這份證明是可罰沒的嗎？
@@ -776,11 +776,11 @@ class AttestationData(Container):
 
 本質上，LMD GHOST 分叉選擇規則是一個函式 $\text{GetHead}(\text{Store}) \rightarrow \text{HeadBlock}$。如我們所見，節點的 Store 就是它對世界的看法：它所收到、可能影響分叉選擇的一切相關資訊。對於我們此處所看的純粹 LMD GHOST 演算法，[Store](/part3/forkchoice/phase0/#store) 的相關部分如下。
 
-  - 區塊樹，它其實只是一份區塊清單。各區塊的父區塊連結在邏輯上把它們連成一棵樹。
+  - 區塊樹，它其實只是一份區塊清單。各區塊的 parent block 連結在邏輯上把它們連成一棵樹。
   - 來自驗證者的最新訊息（投票）清單。
   - 驗證者的[有效餘額](/part2/incentives/balances/)（基於某個狀態），因為這些提供了演算法中所用的權重。
 
-GHOST 演算法的目標，是從給定的區塊樹中選出單一一個葉區塊，其中葉區塊是指沒有任何後代的區塊。這就會是我們所選出的鏈頭區塊。
+GHOST 演算法的目標，是從給定的區塊樹中選出單一一個葉區塊（leaf block），其中葉區塊是指沒有任何後代的區塊。這就會是我們所選出的鏈頭區塊。
 
 我們將假設區塊樹中所有區塊都衍生自單一一個根區塊。在純粹的 GHOST 演算法中，那會是創世區塊：依定義，所有區塊都必須衍生自創世。在我們完整的共識實作中，那個根區塊會是最近一個已證成的檢查點區塊。就我們目前的目的而言，我們需要知道的只是：GHOST 演算法從一個給定的區塊出發，並忽略所有並非衍生自該區塊的區塊。
 
@@ -820,7 +820,7 @@ $B_N$ 是最近一次鏈頭投票投給區塊 $N$ 之驗證者的有效餘額總
 
 拆解 GHOST 這個名稱，我們看到這個演算法：是「貪婪」（Greedy）的，意思是它立即取「最重觀測」（Heaviest-Observed）的分支，不再往更遠處看；並且處理的是「子樹」（Sub-Trees），一個分支的權重，就是對該子樹中各區塊所投之票的全部權重總和。
 
-這裡有一個簡單的例子。在這些示意圖中，我區分了：(1) 對某個特定區塊所投之票的權重，也就是附在每個區塊上的數字；(2) 各分支的權重，我把它加在連接區塊與其父區塊的線上。
+這裡有一個簡單的例子。在這些示意圖中，我區分了：(1) 對某個特定區塊所投之票的權重，也就是附在每個區塊上的數字；(2) 各分支的權重，我把它加在連接區塊與其 parent block 的線上。
 
 首先，從 Store 中的最新訊息，我們計算出對樹中每個區塊所投之票的權重。
 
@@ -845,7 +845,7 @@ $B_N$ 是最近一次鏈頭投票投給區塊 $N$ 之驗證者的有效餘額總
 
 <figcaption>
 
-`get_weight()` 函式套用在一個區塊上時，會回傳該區塊及其所有後代所構成之子樹的總權重。這些權重顯示在子區塊與父區塊之間的線上。
+`get_weight()` 函式套用在一個區塊上時，會回傳該區塊及其所有後代所構成之子樹的總權重。這些權重顯示在子區塊與 parent block 之間的線上。
 
 </figcaption>
 </figure>
@@ -878,7 +878,7 @@ $B_N$ 是最近一次鏈頭投票投給區塊 $N$ 之驗證者的有效餘額總
 
 [^fn-toward-12s]: Vitalik 的[《邁向 12 秒區塊時間》](https://blog.ethereum.org/2014/07/11/toward-a-12-second-block-time)對工作量證明情境下的這個議題做了引人入勝的分析。然而，其中沒有太多能延續到我們的 PoS 實作，除了「GHOST 有助於理解一個會分叉的網路」這一點之外。
 
-在這種情況下，我們想善用一切可取得的最大量資訊。對同一個父區塊的兩個不同子區塊所投的票，應被視為「所有那些驗證者都偏好該父區塊的分支」的佐證，即使對於子區塊存在分歧。GHOST 達成這一點的辦法很簡單，就是讓對一個子區塊投的票為它所有的祖先增添權重。如此一來，面臨選擇時，我們就偏好獲得驗證者總支持最多的分支。我已在[上方的示意圖](#img_annotated_forkchoice_lmd_ghost_2)中說明了這一點：分支 $C$ 較分支 $B$ 受青睞，儘管區塊 $B$ 比區塊 $C$ 有更多的直接票數，因為整體而言有更多驗證者為分支 $C$ 投下了最新票。
+在這種情況下，我們想善用一切可取得的最大量資訊。對同一個 parent block 的兩個不同子區塊所投的票，應被視為「所有那些驗證者都偏好該 parent block 的分支」的佐證，即使對於子區塊存在分歧。GHOST 達成這一點的辦法很簡單，就是讓對一個子區塊投的票為它所有的祖先增添權重。如此一來，面臨選擇時，我們就偏好獲得驗證者總支持最多的分支。我已在[上方的示意圖](#img_annotated_forkchoice_lmd_ghost_2)中說明了這一點：分支 $C$ 較分支 $B$ 受青睞，儘管區塊 $B$ 比區塊 $C$ 有更多的直接票數，因為整體而言有更多驗證者為分支 $C$ 投下了最新票。
 
 最長鏈規則丟棄了這一切資訊，並可能讓一個分支勝出，即使只有少數驗證者一直在它上面下工夫。
 
@@ -1258,7 +1258,7 @@ Casper FFG 把來源與目標投票結合進單一一則訊息：一個對連結
 <a id="img_consensus_finalised"></a>
 <figure class="diagram" style="width: 80%">
 
-![一張示意圖，顯示當一個已證成檢查點的直接子檢查點被證成時，該父檢查點就被最終確定。](images/diagrams/consensus-finalised.svg)
+![一張示意圖，顯示當一個已證成檢查點的直接子檢查點被證成時，該 parent checkpoint 就被最終確定。](images/diagrams/consensus-finalised.svg)
 
 <figcaption>
 
@@ -1873,17 +1873,111 @@ PoW 疊加層計畫在 2018 年被放棄，改為透過一個運行 Gasper（LMD
 
 關於 Casper FFG 種種保證的一些形式化驗證工作（針對原始論文所呈現的版本，也就是不含 $k$-最終性等等的版本），在[《在 Coq 證明輔助器中驗證 Casper》](https://core.ac.uk/download/pdf/161954227.pdf)（2018）論文中有所描述。它含有一些有用的洞見，尤其澄清了似真活躍性證明背後的假設。
 
-### Gasper <!-- /part2/consensus/gasper/* -->
+### Gasper <!-- /part2/consensus/gasper/ -->
 
-TODO
+> **譯者註**：本節在 Ben Edgington 的原書中目前仍是一個僅標記為 `TODO` 的待補章節——截至本譯本撰寫時，[英文原書](https://eth2book.info/latest/part2/consensus/gasper/)亦尚未補上內容。以下文字由譯者參考 [Gasper 論文](https://arxiv.org/abs/2003.03052)及相關研究補寫而成，並非原作者 Ben Edgington 的文字；行文與引用方式力求與全書其餘部分保持一致。若原書日後補上正式內容，仍請以原書為準。
+
+<div class="summary">
+
+  - Gasper 是把 [LMD GHOST](/part2/consensus/lmd_ghost/) 與 [Casper FFG](/part2/consensus/casper_ffg/) 拴在一起所得到的共識協定。
+  - Casper FFG 這層最終性裝置約束了 LMD GHOST 的分叉選擇，得到所謂的「混合式 LMD GHOST」。
+  - 每一份證明都身兼兩職：它同時是一張 LMD GHOST 投票，也是一張 Casper FFG 投票。
+  - Gasper 可被理解為同時維護兩條帳本：一條動態可用的鏈，以及一條巢狀於其中、已最終確定的前綴鏈。
+
+</div>
+
+#### 引言
+
+在前兩節中，我們分別檢視了以太坊共識協定的兩個組成部分。[LMD GHOST](/part2/consensus/lmd_ghost/) 是一個分叉選擇規則，它讓鏈得以逐時段持續成長；[Casper FFG](/part2/consensus/casper_ffg/) 則是一個最終性裝置，它週期性地為鏈賜予最終確定。我們刻意各自孤立地看待它們——談 LMD GHOST 時，我們忽略了最終性那層疊加層；談 Casper FFG 時，我們也幾乎不去碰底層的區塊提議機制。
+
+本節要做的，正是把這兩者重新拼合起來。這個合併後的協定[後來被稱為](https://arxiv.org/abs/2003.03052)「Gasper」——一個由「GHOST」與「Casper」揉成的混成詞——並在 2020 年由 Vitalik Buterin 等九位作者發表的 [Gasper 論文](https://arxiv.org/abs/2003.03052)〈Combining GHOST and Casper〉中被形式化。誠如該論文標題所言，Gasper 的全部要旨，就是「把 GHOST 與 Casper 結合起來」。
+
+然而，「結合」二字說來輕巧，接縫卻不總是平整。如我們在[概觀](/part2/consensus/overview/)中所提，把兩個各自獨立的共識協定拴在一起，會在它們交會之處催生出種種微妙之處與邊界案例。本節聚焦於這道接縫本身——兩個協定究竟如何彼此咬合。至於它們咬合不良時所衍生的種種問題，我們留待[問題與修正](/part2/consensus/issues/)一節再行處理。
+
+#### 混合式 LMD GHOST
+
+回想一下，純粹的 [LMD GHOST](/part2/consensus/lmd_ghost/) 分叉選擇，總是從鏈的根部——創世區塊——開始它對鏈頭區塊的搜尋，並沿途在每一個分叉處選擇「驗證者最新投票之權重最大」的那個子節點。Casper FFG 對這個程序的修改，可以一句話概括：別再從創世區塊開始。
+
+取而代之地，分叉選擇會從它所知道的最高已證成檢查點開始搜尋[^fn-gasper-from-justified]。任何並非由那個檢查點衍生而來的候選鏈頭區塊，都會被完全排除在外。換句話說，Casper FFG 並不自己挑選鏈頭，它只是替 LMD GHOST 把區塊樹的一部分修剪掉，然後讓 LMD GHOST 在剩下的部分裡照常運作。
+
+[^fn-gasper-from-justified]: 更精確地說，是「最高的、且為已最終確定檢查點之後代的已證成檢查點」。我們會在[問題與修正](/part2/consensus/issues/)一節看到，在某些情況下，一個節點所看到的最高已證成檢查點，可能並不在它目前所認定的鏈上——這便是[未實現證成](/part3/forkchoice/phase0/)所要處理的議題之一。
+
+這個受 Casper FFG 約束的 LMD GHOST，[Gasper 論文](https://arxiv.org/pdf/2003.03052.pdf)稱之為「混合式 LMD GHOST」（hybrid LMD GHOST，HLMD GHOST）。它既不是純粹的 LMD GHOST，也不是 Casper FFG，而是兩者咬合之後的產物。我們在 Eth2 規格中實際實作的分叉選擇——也就是 [`get_head()`](/part3/forkchoice/phase0/#get_head) 函式——正是這個混合式版本；我會在[註解版分叉選擇](/part3/forkchoice/phase0/)中詳細拆解它。
+
+這個約束之所以舉足輕重，是因為它正是「最終性」得以發揮效力的途徑。LMD GHOST 自身會分叉，並不提供任何安全性保證。但一旦某個檢查點被證成乃至最終確定，分叉選擇就被迫永遠把它含納在內，於是所有與它競爭的分支都遭到斬除。最終確定能防止長重組，靠的正是這個機制。
+
+#### 一份證明，兩張選票
+
+LMD GHOST 需要投票，Casper FFG 也需要投票。一個天真的設計，也許會讓驗證者分別為兩者各送出一則訊息。但以太坊並不這麼做：它讓每一份[證明](/part2/consensus/casper_ffg/)同時承載兩種投票。
+
+回想一下我們在 [Casper FFG 一節](/part2/consensus/casper_ffg/)所看過的 [`AttestationData`](/part3/containers/dependencies/#attestationdata) 結構，它的欄位上就明明白白標註了這一點：
+
+```python
+class AttestationData(Container):
+    slot: Slot
+    index: CommitteeIndex
+    # LMD GHOST vote
+    beacon_block_root: Root
+    # FFG vote
+    source: Checkpoint
+    target: Checkpoint
+```
+
+其中，`beacon_block_root` 欄位是這位驗證者所見鏈頭區塊的根——這就是它的 **LMD GHOST 投票**；而 `source` 與 `target` 這一對檢查點構成一條_連結_（link）投票——這就是它的 **Casper FFG 投票**。於是，驗證者每個紀元只需作證一次、只需簽署一次，這一則訊息便同時餵養了分叉選擇與最終性兩套機制。這在頻寬與[簽章聚合](/part2/building_blocks/signatures/)上都極為划算[^fn-gasper-one-sig]，但它也意味著兩套機制的命運被綁在了一起：一份遲到或無效的證明，會同時拖累兩者。
+
+[^fn-gasper-one-sig]: 由於 BLS 簽章可以聚合，一個委員會中數百位驗證者「相同的」投票得以被壓縮成單一一則訊息。讓 LMD GHOST 與 Casper FFG 共用同一份證明，意味著我們只需聚合一次。
+
+不過，兩套機制使用這些投票的方式並不相同。LMD GHOST 會採計透過流言（gossip）網路收到的證明，因為它需要儘快得知最新的投票，以便追蹤鏈頭。Casper FFG 則只採計那些已被納入區塊的證明——因為對最終性這種不可逆的決定而言，我們需要一份所有人共享的、白紙黑字的紀錄，而區塊歷史恰恰提供了這份紀錄。圍繞「證明須及時被納入區塊」的種種準則，我們留待[問題與修正](/part2/consensus/issues/)一節討論；[EIP-7045](https://eips.ethereum.org/EIPS/eip-7045) 放寬了證明可被納入的時間窗口，便是這方面的一項重要變更。
+
+#### 以時段為基礎的檢查點
+
+在我們孤立地討論 [Casper FFG](/part2/consensus/casper_ffg/) 時，曾假設每個時段裡都恰有一個區塊，並把檢查點想成是基於區塊高度的。如我們當時所承諾的，現在該放寬這個假設了。
+
+在原始的 [Casper FFG 論文](https://arxiv.org/abs/1710.09437)中，檢查點是每隔固定數目的區塊取一個。但信標鏈是以時段、而非以區塊來計時的，而時段可能是空的——沒有任何提議者在那個時段產出區塊。因此，Gasper 把檢查點重新定義為一個「區塊與紀元的配對」：紀元 $N$ 的檢查點，錨定在「紀元 $N$ 的第一個時段」這個時間點上，而非錨定在某個區塊高度上。
+
+當紀元邊界落在一個空時段上時，該檢查點便採用「在那個邊界之前（含）最近的那個區塊」。這就產生了所謂的**空檢查點**：一個檢查點的 `root` 指向某個更早時段中的區塊。同一個區塊，因此可能身兼數個連續紀元的檢查點區塊——每一個配對都是一個各自獨立的檢查點，因為它們的紀元編號不同。
+
+這樣的設計把「最終性的節奏」與「出塊的節奏」解耦了開來。即使某些提議者錯失了它們的時段，紀元邊界依舊照常推進，證成與最終確定也依舊能照常累積。代價則是又添了一層需要小心處理的記帳工作，而這層記帳，正是 Gasper 若干最棘手之邊界案例的根源。
 
 #### Gasper 中的安全性與活躍性
 
-TODO
+如我們[一路以來](/part2/consensus/preliminaries/)所見，共識協定的兩大基本性質是安全性與活躍性。Gasper 巧妙的地方，在於它把這兩者分派給兩個不同的組成部分各自負責。
+
+  - **安全性**由 Casper FFG 提供。[Gasper 論文](https://arxiv.org/abs/2003.03052)證明了它的「[可問責安全性](/part2/consensus/casper_ffg/)」：若兩個相衝突的檢查點都被最終確定，那麼必定有「掌控著至少三分之一質押」的驗證者違反了 Casper 的某一條罰沒戒律。而且，這些違規是可在鏈上被證明、進而被罰沒的——這正是「可問責」一詞的由來，也是經濟性最終性的基礎。
+  - **活躍性**由 LMD GHOST 提供。即使 Casper FFG 一時無法賦予最終性，底層的鏈仍會透過 LMD GHOST 持續一個接一個地產出區塊。Gasper 論文另外還證明了 Casper FFG 的「[似真活躍性](/part2/consensus/casper_ffg/)」——協定永遠不會把自己鎖死到無法再產生新的已證成檢查點——以及在較強之同步性假設下的「機率性活躍性」。
+
+把安全性與活躍性如此切開，呼應了以太坊[優先考量活躍性](/part2/consensus/preliminaries/)的那個取捨：當兩者無法兼得時，鏈會選擇繼續成長（保住活躍性），而把最終性暫時擱置。
+
+然而，這道接縫是有代價的。第三方研究人員在分析過 Gasper 之後，曾直言「[Gasper 協定是複雜的](https://arxiv.org/pdf/2009.04987.pdf)」，而那番話還是在實作了我們將於[問題與修正](/part2/consensus/issues/)一節檢視的諸多修正之前說的。Vitalik 本人也曾[寫道](https://notes.ethereum.org/@vbuterin/single_slot_finality#Bad-news-hybrid-consensus-mechanisms-actually-have-many-unavoidable-problems)：
+
+> Casper FFG 最終確定與 LMD GHOST 分叉選擇之間的「介面」是顯著複雜性的一個來源，導致了若干攻擊——這些攻擊需要相當複雜的修補才能修復，而更多的弱點仍定期被發現。
+
+諸如[平衡攻擊](https://ethresear.ch/t/a-balancing-attack-on-gasper-the-current-candidate-for-eth2s-beacon-chain/8079?u=benjaminion)（balancing attack）與彈跳攻擊（bouncing attack）之類的攻擊，多半就棲身在這道接縫之中。我們會在[問題與修正](/part2/consensus/issues/)一節逐一檢視它們，以及對抗它們的種種防禦。
 
 ##### 鏈頭與鏈尾
 
-TODO
+要直觀地理解 Gasper 為何把工作如此切分，有一個很有幫助的視角，出自 Joachim Neu、Ertem Nusret Tas 與 David Tse 的〈[Ebb-and-Flow Protocols](https://arxiv.org/abs/2009.04987)〉一文。我們在[概觀](/part2/consensus/overview/)的「另見」裡曾預告過這個「巢狀帳本」（nested ledger）的概念，現在就來把它講完。
+
+他們的出發點是一條形同 [CAP 定理](/part2/consensus/preliminaries/)的不可能性結果：沒有任何單一一條鏈，能夠既在「參與率動態變化」之下保持活躍，又在「網路暫時分裂」之下保持安全。這兩個目標是真正彼此衝突的。
+
+他們的解法，是讓單一一個協定同時輸出**兩條**帳本：
+
+  - 一條**動態可用的鏈**，由 LMD GHOST 這類分叉選擇規則產出。它持續成長，即使在參與率驟降或網路分裂時也保持活躍，但它不提供最終性。這是鏈的「**頭**」，是不斷向前探伸的活躍前緣。
+  - 一條**已最終確定的鏈**，由 Casper FFG 這類最終性裝置產出。它在網路分裂期間可能停滯，卻永不分叉。這是鏈的「**尾**」，是已然落定、再也不會更動的部分。
+
+關鍵之處在於：已最終確定的鏈，永遠是動態可用之鏈的一個**前綴**。最終性是一條尾巴，緊跟在那顆不斷前探的頭之後，亦步亦趨地收攏落定。兩者並非兩條相異的鏈，而更像是同一枚硬幣的正反兩面[^fn-gasper-heads-tails]——這也正是本小節標題「鏈頭與鏈尾」的雙關所在。
+
+[^fn-gasper-heads-tails]: 英文原書為本小節所擬的標題是「Heads and tails」。除了「鏈頭與鏈尾」之外，它也戲指一枚硬幣的正面（heads）與反面（tails）：可用性與最終性，是同一個協定的一體兩面。
+
+把這個視角套回 Gasper，一切就清晰了：LMD GHOST 就是那條動態可用的鏈，Casper FFG 就是那條已最終確定的前綴鏈。一個願意承擔較低保證、以換取「總是有一條鏈可跟隨」的使用者，跟著鏈頭走即可；一個需要不可逆之結算保證的使用者，則應等候鏈尾。Gasper 並沒有逼迫你在活躍性與安全性之間二選一——它把兩者都交到你手上，讓你按自己的需求各取所需。
+
+#### 另見
+
+[Gasper 論文](https://arxiv.org/abs/2003.03052)〈Combining GHOST and Casper〉是這一切的權威出處。它頗具技術性，但前幾節的鋪陳相當好讀。
+
+關於本節結尾所談的「可用性—最終性」取捨，Joachim Neu、Ertem Nusret Tas 與 David Tse 的〈[Ebb-and-Flow Protocols: A Resolution of the Availability-Finality Dilemma](https://arxiv.org/abs/2009.04987)〉是它原始的學術出處。Joachim Neu 在 Devconnect 2022 ETHconomics 場次的演講〈[The Why and How of PoS Ethereum's Consensus Problem](https://www.youtube.com/watch?v=2nMS-TK_tMw)〉，則對同一主題提供了平易近人得多的入門。
+
+至於 Gasper 在兩個組成部分的接縫處所滋生的種種問題、以及相應的修正，全都收在下一節[問題與修正](/part2/consensus/issues/)裡。
 
 ### 問題與修正 <!-- /part2/consensus/issues/ -->
 
@@ -1977,7 +2071,19 @@ TODO
 
 TODO。見[註解版分叉選擇](/part3/forkchoice/phase0/#unrealised-justification)。
 
-### 弱主觀性 <!-- /part2/validator/weak_subjectivity/* -->
+### 弱主觀性 <!-- /part2/validator/weak_subjectivity/ -->
+
+> **譯者註**：本節在 Ben Edgington 的原書中僅有開頭兩段引言，其餘為標記為 `TODO` 的待補內容（截至本譯本撰寫時，[英文原書](https://eth2book.info/latest/part2/validator/weak_subjectivity/)亦同）。開頭兩段為原作者文字；自「客觀性與弱主觀性」一節起的內容，由譯者參考以太坊共識規格與相關文獻補寫而成。若原書日後補上正式內容，仍請以原書為準。
+
+<div class="summary">
+
+  - 工作量證明的鏈是「客觀的」：任何節點單憑創世區塊與協定規則，就能算出正典鏈。
+  - 權益證明的鏈是「弱主觀的」：一個新加入、或長時間離線的節點，需要一個近期的可信賴檢查點，才能安全地辨識出正典鏈。
+  - 這個檢查點所抵禦的是長程攻擊——一種利用「已退出驗證者之金鑰不再受罰沒約束」的攻擊。
+  - 一個檢查點能安全使用的時間長度，稱為弱主觀性週期。
+  - 現代的共識用戶端預設都從近期的檢查點同步，而非從創世區塊同步。
+
+</div>
 
 為了讓權益證明能成為世界經濟活動的穩固基礎，必須解決的兩大問題是：(1) 無利害關係問題，以及 (2) 長程攻擊（long range attack）。
 
@@ -1985,7 +2091,93 @@ TODO。見[註解版分叉選擇](/part3/forkchoice/phase0/#unrealised-justifica
 
 <!-- Vlad's earlier post has a good viewpoint on weak subjectvity: https://blog.ethereum.org/2015/08/01/introducing-casper-friendly-ghost -->
 
-TODO
+#### 客觀性與弱主觀性
+
+要看懂弱主觀性，最好的起點是它的反面：客觀性。
+
+我們說一個共識協定是**客觀的**（objective），如果任何一個節點，單憑創世區塊與協定規則本身——不需要任何外來的輸入——就能判定出哪一條才是正典鏈。工作量證明的鏈大致就是客觀的：規則是「跟隨累積工作量最多的有效鏈」，而一個剛上線的節點只要下載所有候選鏈、挑出最重的那一條即可。它不必信任任何人。
+
+權益證明的鏈則不然。由於我們接下來要談的長程攻擊，一個「新加入、或離線時間長到超過某個門檻」的節點，無法單憑協定規則可靠地分辨出正典鏈——一條偽造的鏈，可能在規則上看起來與真鏈一模一樣。這樣的節點，需要從某個可信賴的來源取得一小撮額外的資訊。這個性質，Vitalik 稱之為**弱主觀性**（weak subjectivity）：說它「弱」，是因為所需的信任只是極少量、且只需一次；說它「主觀」，是因為這一小撮資訊終究來自協定之外。
+
+#### 長程攻擊
+
+那麼，是什麼使得權益證明的鏈無法做到客觀？答案是**長程攻擊**（long range attack）。
+
+回想一下，[罰沒](/part2/consensus/casper_ffg/)之所以能讓驗證者對其投票負責，前提是它們的質押仍被押在系統裡。但驗證者終究會退出，並在一段時間後把質押提領出去。一旦質押被提走，那把簽署金鑰就不再受任何罰沒約束——拿它去簽署一段相衝突的歷史，是毫無代價的。
+
+長程攻擊正是利用了這一點：
+
+  1. 攻擊者設法取得一批「曾在過去某個時點掌控大量質押、但如今早已退出並提領完畢」的驗證者之舊金鑰。對那些金鑰的原主人而言，它們早已一文不值，因此取得它們可能相當廉價。
+  2. 攻擊者用這些金鑰，從很久以前的某個分叉點開始，重新簽署出一整條替代鏈——沿途所有的區塊與證明都可被重簽。
+  3. 由於這些簽署者在那個歷史時點確實是合法的驗證者集合成員，而它們如今又都已不受約束，這條替代鏈上沒有任何東西是可被罰沒的。
+
+對一個「純粹客觀地」判斷的節點而言，這條偽造的鏈可能看起來完美無瑕、無從拒斥。這就是長程攻擊的危險所在，也是「無利害關係問題的罰沒解法為何不足以單獨成事」的原因：罰沒只能威懾「此刻仍押著質押」的驗證者。
+
+#### 弱主觀性檢查點
+
+弱主觀性對長程攻擊的解法，樸實得令人意外：與其要求節點純粹客觀地判斷，不如給它一個近期的、可信賴的立足點。
+
+一個**弱主觀性檢查點**（weak subjectivity checkpoint），就是一個近期已最終確定之區塊的根（連同它的紀元編號），由某個可信賴的來源提供。拿到它之後，節點只接受「與該檢查點一致」的鏈，並從那裡開始客觀地往前同步。一旦同步完成、並持續保持上線，這個節點便重新回到完全客觀的狀態——它親眼見證了其後發生的一切。
+
+換句話說，弱主觀性並不是要節點永久地信任某人，而只是要它在「加入網路」或「久別重逢」這一個時刻，借用一丁點社群共識。誠如 Vitalik 在他 2014 年那篇恰如其名的文章〈[Proof of Stake: How I Learned to Love Weak Subjectivity](https://blog.ethereum.org/2014/11/25/proof-stake-learned-love-weak-subjectivity)〉中所論證的：這一點點信任，其實一直都在——你信任你的用戶端軟體、信任你下載協定規格的來源——把它擴及一個近期的區塊根，並算不上什麼新的負擔。
+
+#### 弱主觀性週期
+
+一個弱主觀性檢查點不會永遠安全，它必須夠「新」。它能安全使用的那段時間長度，稱為**弱主觀性週期**（weak subjectivity period）。
+
+為什麼會有期限？因為長程攻擊需要時間來鋪陳。攻擊者要先「捕獲」週期開頭的那個驗證者集合，再等到其中夠多的驗證者退出、提領，使它們脫離罰沒的射程，然後才能無風險地最終確定一條相衝突的鏈。驗證者進出系統的速率，被[變動量限制](/part3/helper/accessors/#get_validator_churn_limit)（churn limit）封頂——而這正是「驗證者退出速率與弱主觀性[強烈相關](/part3/config/preset/#min_per_epoch_churn_limit)」的緣由。驗證者集合愈大，要把足夠的質押輪替出去就愈花時間，弱主觀性週期也就愈長。
+
+以太坊的共識規格把這個道理寫成了 [`compute_weak_subjectivity_period()`](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/weak-subjectivity.md) 函式：
+
+```python
+def compute_weak_subjectivity_period(state: BeaconState) -> uint64:
+    """
+    Returns the weak subjectivity period for the current ``state``.
+    This computation takes into account the effect of:
+        - validator set churn (bounded by ``get_validator_churn_limit()`` per epoch), and
+        - validator balance top-ups (bounded by ``MAX_DEPOSITS * SLOTS_PER_EPOCH`` per epoch).
+    """
+    ws_period = MIN_VALIDATOR_WITHDRAWABILITY_DELAY
+    N = len(get_active_validator_indices(state, get_current_epoch(state)))
+    t = get_total_active_balance(state) // N // ETH_TO_GWEI
+    T = MAX_EFFECTIVE_BALANCE // ETH_TO_GWEI
+    delta = get_validator_churn_limit(state)
+    Delta = MAX_DEPOSITS * SLOTS_PER_EPOCH
+    D = SAFETY_DECAY
+
+    if T * (200 + 3 * D) < t * (200 + 12 * D):
+        epochs_for_validator_set_churn = (
+            N * (t * (200 + 12 * D) - T * (200 + 3 * D)) // (600 * delta * (2 * t + T))
+        )
+        epochs_for_balance_top_ups = N * (200 + 3 * D) // (600 * Delta)
+        ws_period += max(epochs_for_validator_set_churn, epochs_for_balance_top_ups)
+    else:
+        ws_period += 3 * N * D * t // (200 * Delta * (T - t))
+
+    return ws_period
+```
+
+撥開整數運算的枝節不論，它的骨幹是清楚的：弱主觀性週期會隨著活躍驗證者的數目 `N` 而增長，並隨著變動量限制 `delta` 而縮短。常數 `SAFETY_DECAY`（在程式碼中記為 $D$，目前的值是 `10`）則設定了我們所願意容忍的安全餘裕損失上限——它規定，在週期之內所發動的攻擊，其所面對的可罰沒門檻不得低於 $\frac{1}{3} - \frac{D}{100}$ 的質押。
+
+給個粗略的量級感：在驗證者數目達數十萬的情況下，這道公式所給出的週期約為兩週上下。一個比這更舊的檢查點就算「過期」了，從它同步並不安全。共識規格另外提供了 `is_within_weak_subjectivity_period()` 來執行這項過期檢查。
+
+#### 檢查點同步
+
+弱主觀性聽起來像是個累贅，但它其實順帶帶來了一個相當實用的好處。
+
+既然一個新節點無論如何都需要一個近期的可信賴檢查點，那它何不乾脆「直接從那裡開始」？這正是**檢查點同步**（checkpoint sync，又稱弱主觀性同步）的精神所在。節點不再從創世區塊起、逐一重播每一個區塊（這要花上好幾天），而是直接取得一份近期的已最終確定狀態，並從那一點開始運作。同步因此從數天縮短為數分鐘。今天，幾乎所有的共識用戶端都預設採用檢查點同步。
+
+實務上，使用者通常會提供一個「檢查點同步端點」的網址——一個 Beacon API 端點——讓用戶端在啟動時從那裡下載近期的已最終確定狀態。社群維護了一份公開端點清單 [eth-clients/checkpoint-sync-endpoints](https://github.com/eth-clients/checkpoint-sync-endpoints)，上頭列有由各用戶端團隊與基礎設施業者所運行的端點。
+
+不過，這裡的「信任」是貨真價實的：你的節點會把它整個世界觀都建立在這個檢查點之上。最穩當的做法，是用你自己另一個可信賴的節點作為來源。若使用公開端點，務必拿區塊瀏覽器之類的獨立來源，去比對該檢查點的時段與狀態根——切莫把任何單一一份清單當成唯一的真理來源。
+
+#### 另見
+
+Vitalik 2014 年的〈[Proof of Stake: How I Learned to Love Weak Subjectivity](https://blog.ethereum.org/2014/11/25/proof-stake-learned-love-weak-subjectivity)〉是這個主題的源頭。他稍後的〈[權益證明常見問答](https://web.archive.org/web/20231109183738/https://vitalik.ca/general/2017/12/31/pos_faq.html)〉中，也有一節專談弱主觀性。
+
+Aditya Asgaonkar 的〈[Weak Subjectivity in Ethereum Proof-of-Stake](https://notes.ethereum.org/@adiasg/weak-subjectvity-eth2)〉，是針對以太坊權益證明的弱主觀性所寫的權威說明，共識規格本身也引用了它。弱主觀性週期那道公式的詳細推導，則見於 Runtime Verification 的[分析報告](https://github.com/runtimeverification/beacon-chain-verification/blob/master/weak-subjectivity/weak-subjectivity-analysis.pdf)。
+
+關於檢查點同步的實作面向，共識規格的[弱主觀性指南](https://github.com/ethereum/consensus-specs/blob/dev/specs/phase0/weak-subjectivity.md)定義了相關的程序與函式，而[這份操作指南](https://notes.ethereum.org/@launchpad/checkpoint-sync)則說明了使用者該如何著手。
 
 ## 一個時段的進程 <!-- /part2/slot/* -->
 
@@ -2403,7 +2595,7 @@ contract DepositContract is IDepositContract, ERC165 {
 
 由於這是一棵增量式 Merkle 樹，我們知道位於 `deposit_count` 處之葉的值為零：這個計數從零開始，所以葉 `deposit_count` 尚未被指派；它會是下一個被指派的葉。
 
-要計算父節點，我們把它的左、右子節點的值一起雜湊。Solidity 的 [`abi.encodePacked()`](https://docs.soliditylang.org/en/v0.8.11/abi-spec.html#non-standard-packed-mode) 函式被用來串接每個兄弟節點的 32 個位元組。
+要計算 parent node，我們把它的左、右子節點的值一起雜湊。Solidity 的 [`abi.encodePacked()`](https://docs.soliditylang.org/en/v0.8.11/abi-spec.html#non-standard-packed-mode) 函式被用來串接每個兄弟節點的 32 個位元組。
 
 請注意，對於 $n > \log_2 i$（其中 $i$ 是 `deposit count`），我們不使用任何 $B_n$——任何我們所造訪、高於此處的節點都將只會是左節點。我們在一筆新存款之後[更新 `branch`](#updating_branch) 時會利用這一點。
 
@@ -2423,7 +2615,7 @@ contract DepositContract is IDepositContract, ERC165 {
 </figcaption>
 </figure>
 
-這張圖顯示一棵有三層的增量式 Merkle 樹。我們已用值 $v_0$ 到 $v_4$ 填滿了其中五個葉，但我們實際儲存的東西只有 `branch` 的三個 $B_n$ 值，以及 `zero_hashes` 的三個 $Z_n$ 值。在每一層 $n$，我們會使用 $B_n$ 或 $Z_n$ 之一來計算父節點。
+這張圖顯示一棵有三層的增量式 Merkle 樹。我們已用值 $v_0$ 到 $v_4$ 填滿了其中五個葉，但我們實際儲存的東西只有 `branch` 的三個 $B_n$ 值，以及 `zero_hashes` 的三個 $Z_n$ 值。在每一層 $n$，我們會使用 $B_n$ 或 $Z_n$ 之一來計算 parent node。
 
 `deposit_count` 是 5，所以我們從標記為「5」的葉處的 `node` 開始，我們知道它會是零，因為它尚未被指派。這是一個右子節點，因此我們把它與作為其左兄弟節點的 $B_0$ 結合。我們知道 $B_0$ 會等於最後被插入的葉值 $v_4$。（如果它是一個左子節點，我們就會把它與 $Z_0 = 0$ 結合。）
 
@@ -7181,7 +7373,7 @@ SSZ 規格用「Merkleization」一詞同時指稱
 
 要理解 Merkle 化，我們首先需要理解 [Merkle 樹](https://en.wikipedia.org/wiki/Merkle_tree)。這些一點也不新，可回溯到 1970 年代。
 
-其構想是：我們有一組「葉」，那就是我們的資料，我們透過雜湊把那些葉反覆地約化成單一一個簡短的根。這個約化是藉由把葉成對地雜湊、做出一個「父」節點來完成的。我們對父節點重複這個過程做出祖父節點，依此類推，建出一個以單一一個祖先根為頂點的二元樹結構。在 Merkle 化中，我們只會處理「葉的數量是二的次方」的結構，所以我們有一棵完整二元樹。
+其構想是：我們有一組「葉」，那就是我們的資料，我們透過雜湊把那些葉反覆地約化成單一一個簡短的根。這個約化是藉由把葉成對地雜湊、做出一個 parent node 來完成的。我們對 parent node 重複這個過程做出 grandparent node，依此類推，建出一個以單一一個祖先根為頂點的二元樹結構。在 Merkle 化中，我們只會處理「葉的數量是二的次方」的結構，所以我們有一棵完整二元樹。
 
 在下面的圖中，葉是我們的四個資料團 $A$、$B$、$C$、$D$。這些可以是任何資料字串，雖然在 Merkle 化中它們會是 32 位元組的「分塊」。函式 $H$ 是我們的雜湊函式，而運算子 $+$ 串接字串。所以 $H(A+B)$ 是「字串 $A$ 與 $B$ 串接」的雜湊[^fn-roots-and-leaves]。
 
@@ -8687,9 +8879,7 @@ Network delays are the main limiting factor in shortening the slot length. Three
 
 一旦一個驗證者被標記為符合啟用資格，同樣的規則也適用於新的驗證者啟用。
 
-驗證者能退出的速率，與弱主觀性（weak subjectivity）這個概念、以及弱主觀性週期，有著很強的關聯。
-
-[TODO: Link to weak subjectivity discussion when done]::
+驗證者能退出的速率，與[弱主觀性](/part2/validator/weak_subjectivity/)（weak subjectivity）這個概念、以及弱主觀性週期，有著很強的關聯。
 
 ##### `CHURN_LIMIT_QUOTIENT`
 
@@ -10019,7 +10209,7 @@ def is_valid_merkle_branch(leaf: Bytes32, branch: Sequence[Bytes32], depth: uint
     return value == root
 ```
 
-這是[驗證一條 Merkle 分支](https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/)（也稱為 Merkle 證明）的經典演算法。隨著樹從葉往根被走訪，節點被迭代地雜湊。`index` 的各位元選出我們在每一層是父節點的右子代還是左子代。結果應與所給定之樹的 `root` 相符。
+這是[驗證一條 Merkle 分支](https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/)（也稱為 Merkle 證明）的經典演算法。隨著樹從葉往根被走訪，節點被迭代地雜湊。`index` 的各位元選出我們在每一層是 parent node 的右子代還是左子代。結果應與所給定之樹的 `root` 相符。
 
 以這種方式，我們證明了我們知道 `leaf` 是「葉串列中位置 `index` 處的值」，並且我們知道樹其餘部分的整個結構，如 `branch` 中所總結的那樣。
 
@@ -13464,13 +13654,13 @@ $B_N$ 是「最近的鏈頭投票是為區塊 $N$ 之驗證者」的有效餘額
 
 ##### 提議者增益與遲到的區塊
 
-提議者增益的一個副作用是：它讓客戶端能可靠地把「太晚發布的區塊」重組掉（孤立掉）。提議者可以選擇建構於遲到區塊的父代之上，而非建構於遲到的區塊之上。
+提議者增益的一個副作用是：它讓客戶端能可靠地把「太晚發布的區塊」重組掉（孤立掉）。提議者可以選擇建構於遲到區塊的 parent 之上，而非建構於遲到的區塊之上。
 
 一個區塊提議者本應在時段的開頭發布它的區塊，使它有時間在最初四秒內被整個委員會收到並作證。然而，合併之後，把區塊提議延遲幾秒鐘可能是有利可圖的，以收集更多的交易收入與更好的可榨取價值機會。雖然「在進入一個時段五六秒時發布」的區塊不會獲得很多票，它們在基本共識規格之下仍[很可能維持正典](https://notes.ethereum.org/@casparschwa/ByHu1XZUq)。只要下一個區塊提議者在時段結束前收到了遲到的區塊，它通常就會把它當成最佳可得鏈頭來建構於其上。[^fn-legend-late-blocks]這是不可取的，因為它懲罰了絕大多數誠實的驗證者——那些（正確地）為一個空時段投票的驗證者——剝奪了它們「正確鏈頭投票」的獎勵，甚至可能在一個紀元的開頭因「不正確的目標投票」而懲罰它們。
 
 [^fn-legend-late-blocks]: 舉例來說，[時段 4939809](https://beaconcha.in/slot/4939809#votes) 與[時段 4939815](https://beaconcha.in/slot/4939815#votes) 的區塊幾乎沒有票，卻成為了正典。它們幾乎肯定是太晚發布的——顯然是由同一個運營者 [Legend](https://beaconcha.in/slots?q=Legend) 發布的——但發布得及時，讓下一個提議者來得及建構於它們之上。太晚發布可能是由於單純的時鐘設定錯誤，也可能是一個刻意的策略，以在合併之後獲得更多的交易收入。無論哪一種情況，它都是不可取的。
 
-沒有提議者增益的話，下一個提議者「不建構於它太晚收到的一個區塊上」是一個會輸的策略。雖然遲到的區塊可能只有少量的票，但它一開始的票比你的區塊多，所以驗證者仍會把遲到的區塊作證為鏈頭，讓它維持正典，並把「你建構於它父代之上的替代區塊」孤立掉。
+沒有提議者增益的話，下一個提議者「不建構於它太晚收到的一個區塊上」是一個會輸的策略。雖然遲到的區塊可能只有少量的票，但它一開始的票比你的區塊多，所以驗證者仍會把遲到的區塊作證為鏈頭，讓它維持正典，並把「你建構於它 parent 之上的替代區塊」孤立掉。
 
 有了提議者增益，只要遲到的區塊票數少於提議者增益的百分比，誠實的提議者就能有信心：它的替代區塊會在分叉選擇中勝出夠久，使得下一個提議者會建構於那個區塊上，而非建構於它略過的那個遲到區塊上。
 
@@ -13483,7 +13673,7 @@ $B_N$ 是「最近的鏈頭投票是為區塊 $N$ 之驗證者」的有效餘額
 </div>
 <figcaption>
 
-區塊 $B$ 太晚發布了，遠在 4 秒的證明截止時間之後。然而，由於不誠實或設定錯誤的驗證者，它仍設法取得了少數幾筆證明（比如說，委員會的 10%）。下一個提議者應該在遲到的區塊之上建構 $C_1$，還是在它的父代之上建構 $C_2$？
+區塊 $B$ 太晚發布了，遠在 4 秒的證明截止時間之後。然而，由於不誠實或設定錯誤的驗證者，它仍設法取得了少數幾筆證明（比如說，委員會的 10%）。下一個提議者應該在遲到的區塊之上建構 $C_1$，還是在它的 parent 之上建構 $C_2$？
 
 </figcaption>
 </figure>
@@ -14059,7 +14249,7 @@ def get_head(store: Store) -> Root:
 
 <figcaption>
 
-`get_weight()` 函式套用於一個區塊時，回傳「該區塊與它所有後裔之子樹」的總權重。這些權重顯示在子區塊與父區塊之間的線上。
+`get_weight()` 函式套用於一個區塊時，回傳「該區塊與它所有後裔之子樹」的總權重。這些權重顯示在子區塊與 parent block 之間的線上。
 
 </figcaption>
 </figure>
@@ -14584,9 +14774,9 @@ def on_block(store: Store, signed_block: SignedBeaconBlock) -> None:
     state_transition(state, signed_block, True)
 ```
 
-首先我們做一些相當不言自明的檢查。為了在分叉選擇中被考量，該區塊必須接合到我們已經擁有的區塊樹上（也就是，它的父代必須在 Store 中），依我們 Store 的時鐘而言它不可來自一個未來的時段，而且它必須來自一個後裔自我們已最終確定檢查點的分支。依「已最終確定」的定義，正典鏈先前的所有分支都被修剪掉。
+首先我們做一些相當不言自明的檢查。為了在分叉選擇中被考量，該區塊必須接合到我們已經擁有的區塊樹上（也就是，它的 parent 必須在 Store 中），依我們 Store 的時鐘而言它不可來自一個未來的時段，而且它必須來自一個後裔自我們已最終確定檢查點的分支。依「已最終確定」的定義，正典鏈先前的所有分支都被修剪掉。
 
-最後的檢查是對該區塊運行一次完整的狀態轉換。這有兩個目的：（1）它檢查該區塊就共識規則而言是有效的，且（2）它給了我們該區塊的後狀態，這是我們需要加入 Store 的。我們從該區塊的父代取得它的前狀態，而我們知道父代已經在 store 中。傳給 [`state_transition()`](/part3/transition/#def_state_transition) 的 `True` 參數確保該區塊的簽章被檢查，並確保「把該區塊套用於狀態的結果」會得出「與該區塊所宣稱相同的狀態根」（「後狀態」必須相符）。客戶端在進行狀態轉換時會在別處運行這項操作，所以在一個最佳的實作中，`state_transition()` 呼叫的結果很可能會被快取在某處。
+最後的檢查是對該區塊運行一次完整的狀態轉換。這有兩個目的：（1）它檢查該區塊就共識規則而言是有效的，且（2）它給了我們該區塊的後狀態，這是我們需要加入 Store 的。我們從該區塊的 parent 取得它的前狀態，而我們知道 parent 已經在 store 中。傳給 [`state_transition()`](/part3/transition/#def_state_transition) 的 `True` 參數確保該區塊的簽章被檢查，並確保「把該區塊套用於狀態的結果」會得出「與該區塊所宣稱相同的狀態根」（「後狀態」必須相符）。客戶端在進行狀態轉換時會在別處運行這項操作，所以在一個最佳的實作中，`state_transition()` 呼叫的結果很可能會被快取在某處。
 
 ##### 更新 Store
 
@@ -14878,7 +15068,7 @@ def is_valid_terminal_pow_block(block: PowBlock, parent: PowBlock) -> bool:
     return is_total_difficulty_reached and is_parent_total_difficulty_valid
 ```
 
-給定兩個 [`PowBlock`](#powblock) 物件（分別對應於一個工作量證明區塊與它的父工作量證明區塊），這個函式檢查該區塊是否符合「成為終端工作量證明區塊」的判準。也就是說，它的總難度超出終端總難度，而它父代的總難度沒有。
+給定兩個 [`PowBlock`](#powblock) 物件（分別對應於一個工作量證明區塊與它的 parent 工作量證明區塊），這個函式檢查該區塊是否符合「成為終端工作量證明區塊」的判準。也就是說，它的總難度超出終端總難度，而它 parent 的總難度沒有。
 
 #### `validate_merge_block`
 
@@ -14911,7 +15101,7 @@ def validate_merge_block(block: BeaconBlock) -> None:
 
 [`TERMINAL_BLOCK_HASH`](/part3/config/configuration/#transition-settings) 是一個參數，客戶端運營者本可協議在必要時用它來覆寫終端總難度機制。舉例來說，如果合併導致了信標鏈分叉，那麼這些分叉本可藉由「手動協議一個 Eth1 合併區塊、並透過客戶端命令列參數把 `TERMINAL_BLOCK_HASH` 設為它的值」來解決。實際上並不需要這麼做，而 `TERMINAL_BLOCK_HASH` 仍維持它的預設值 `Hash32()`。
 
-這個函式其餘的部分檢查：（a）「身為執行酬載之父代的 PoW 區塊」存在，且總難度大於 [`TERMINAL_TOTAL_DIFFICULTY`](/part3/config/configuration/#transition-settings)，以及（b）那個區塊的父代存在，且總難度小於 `TERMINAL_TOTAL_DIFFICULTY`。（難度檢查在 [`is_valid_terminal_pow_block()`](#is_valid_terminal_pow_block) 中進行。）
+這個函式其餘的部分檢查：（a）「身為執行酬載之 parent 的 PoW 區塊」存在，且總難度大於 [`TERMINAL_TOTAL_DIFFICULTY`](/part3/config/configuration/#transition-settings)，以及（b）那個區塊的 parent 存在，且總難度小於 `TERMINAL_TOTAL_DIFFICULTY`。（難度檢查在 [`is_valid_terminal_pow_block()`](#is_valid_terminal_pow_block) 中進行。）
 
 <a id="img_annotated_forkchoice_the_merge_block"></a>
 <figure class="diagram" style="width: 80%">
@@ -14920,12 +15110,12 @@ def validate_merge_block(block: BeaconBlock) -> None:
 
 <figcaption>
 
-第一個信標鏈合併後區塊，包含「其父 PoW 區塊曾是終端 PoW 區塊」的執行酬載。終端 PoW 區塊是第一個「總難度超出 [`TERMINAL_TOTAL_DIFFICULTY`](/part3/config/configuration/#transition-settings)」的 PoW 區塊。
+第一個信標鏈合併後區塊，包含「其 parent PoW 區塊曾是終端 PoW 區塊」的執行酬載。終端 PoW 區塊是第一個「總難度超出 [`TERMINAL_TOTAL_DIFFICULTY`](/part3/config/configuration/#transition-settings)」的 PoW 區塊。
 
 </figcaption>
 </figure>
 
-父 PoW 區塊與祖父 PoW 區塊透過 [`get_pow_block()`](#get_pow_block) 函式被取回，這在實務上涉及對附接的 Eth1／執行客戶端發出 RPC 呼叫。如果這些呼叫中任一者失敗，一個 `assert` 就會被觸發，而 `on_block()` 處理器會放棄退出，不做出任何變更。
+parent PoW 區塊與 grandparent PoW 區塊透過 [`get_pow_block()`](#get_pow_block) 函式被取回，這在實務上涉及對附接的 Eth1／執行客戶端發出 RPC 呼叫。如果這些呼叫中任一者失敗，一個 `assert` 就會被觸發，而 `on_block()` 處理器會放棄退出，不做出任何變更。
 
 ### 更新後的分叉選擇處理器
 
@@ -14992,7 +15182,7 @@ def on_block(store: Store, signed_block: SignedBeaconBlock) -> None:
 
 當給定的區塊是第一個包含執行酬載的信標區塊時，[`is_merge_transition_block()`](/part3/helper/predicates/#def_is_merge_transition_block) 函式會回傳 `True`，否則回傳 `False`。
 
-為了確保執行鏈與信標鏈在合併時的一致性，這第一個合併後的信標區塊需要一些額外的處理。我們必須檢查「它的執行酬載所衍生自的 PoW 區塊」確實符合了[合併的判準](#is_valid_terminal_pow_block)。本質上，它的總難度必須超出終端總難度，而它父代的總難度必須沒有。如果這個測試失敗，那麼就有什麼出了錯，這個信標區塊必須被排除在分叉選擇之外。
+為了確保執行鏈與信標鏈在合併時的一致性，這第一個合併後的信標區塊需要一些額外的處理。我們必須檢查「它的執行酬載所衍生自的 PoW 區塊」確實符合了[合併的判準](#is_valid_terminal_pow_block)。本質上，它的總難度必須超出終端總難度，而它 parent 的總難度必須沒有。如果這個測試失敗，那麼就有什麼出了錯，這個信標區塊必須被排除在分叉選擇之外。
 
 萬一在合併的時點發生 PoW 分叉，可能會有好幾個候選的執行區塊符合這個判準——[這在合併其中一個測試網時發生過](https://web.archive.org/web/20230630134924/https://nitter.it/vdWijden/status/1557555377314701312)[^fn-teku-besu-goerli-merge]——但那沒關係。「成為正典的第一個合併後信標區塊[^fn-first-merged-beacon-block]」的提議者，可決定哪個終端執行區塊勝出。
 
@@ -15210,7 +15400,7 @@ Deneb 所含的主要工作，會是「共識層支援 [EIP-4844](https://eips.e
 
   - [EIP-7044](https://eips.ethereum.org/EIPS/eip-7044)：把自願退出域鎖定在 Capella [#3288](https://github.com/ethereum/consensus-specs/pull/3288)
   - [EIP-7045](https://eips.ethereum.org/EIPS/eip-7045)：增加最大證明納入時段 [#3360](https://github.com/ethereum/consensus-specs/pull/3360)
-  - [EIP-4788](https://eips.ethereum.org/EIPS/eip-4788)：在執行層揭露父信標區塊根 [#3421](https://github.com/ethereum/consensus-specs/pull/3421)
+  - [EIP-4788](https://eips.ethereum.org/EIPS/eip-4788)：在執行層揭露 parent 信標區塊根 [#3421](https://github.com/ethereum/consensus-specs/pull/3421)
   - [EIP-7514](https://eips.ethereum.org/EIPS/eip-7514)：加入最大紀元變動上限 [#3499](https://github.com/ethereum/consensus-specs/pull/3499)
   - 萬一發生模稜兩可，把提議者增益套用於第一個區塊 [#3352](https://github.com/ethereum/consensus-specs/pull/3352)
 
